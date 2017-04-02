@@ -183,9 +183,9 @@ class Sudoku {
       return true;
 
     if (this._board[position] != 0) {
-      if(!(this.checkHorizontal(position) && this.checkVertical(position) && this.checkGrid(position))) {
+      if(!(this.checkHorizontal(position) && this.checkVertical(position) && this.checkGrid(position)))
         return false;
-      }
+
       return this.backtrack(position);
     }
     else {
@@ -193,9 +193,8 @@ class Sudoku {
         this._board[position] = num;
 
         if (this.checkHorizontal(position) && this.checkVertical(position) && this.checkGrid(position)) {
-          if (this.backtrack(position)) {
+          if (this.backtrack(position))
             return true;
-          }
         }
 
       }
@@ -212,7 +211,6 @@ class Sudoku {
     }
 
     return this.backtrack(-1);
-
   }
 
 }
@@ -220,9 +218,14 @@ class Sudoku {
 // The file has newlines at the end of each line,
 // so we call split to remove it (\n)
 var fs = require('fs')
-var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
+// var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
+//   .toString()
+//   .split("\n")[4]
+
+var board_string = fs.readFileSync('set-04_peter-norvig_11-hardest-puzzles.txt')
   .toString()
   .split("\n")[0]
+
 
 var game = new Sudoku(board_string)
 

@@ -111,6 +111,8 @@ class Sudoku {
     for(let j = 0;j <=(9*9)-(9-1) ;j=j+9 ){
       this.boardUrut.push(this.string.slice(j,(j+9)));
     }
+      console.log(this.boardUrut);
+      console.log('\n');
      this.getKosong();
      this.isiKotak(0);
 

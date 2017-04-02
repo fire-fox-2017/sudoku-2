@@ -8,6 +8,8 @@ class Sudoku {
     this.freeElem = {};
     this.fixedCount = 0;
     this.freeCount = 0;
+    this.solvePath = [];
+    this.numInPath = [];
   }
 
   solveForward() {
@@ -66,34 +68,48 @@ class Sudoku {
 
 }
 
-  traceBack() {
+  recurSolver(path) {
+    let sol = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+    if (path < this.solvePath.length) {
 
+    }
+    let pathNo = path;
+    let row = this.solvePath[pathNo][0];
+    let col = this.solvePath[pathNo][1];
+    if (!this.isAnyEmpty()) {
+      if (!this.isAnyDupl()) {
+        return true;
+      }
+    } else {
+      for (let i = 0; i < this.solvePath.length; i++) {
+        if (this.numInPath[i] === 0) {
+          for (let j = 0; j < sol.length; j++) {
+            let newNum = sol[j];
+            for (let k = 0; k < this.freeCountl; k++) {
+              let elem = this.freeElem[String(k)];
+              if (elem.row === row && elem.col === col) {
+                elem.number = newNum;
+              }
+            }
+            pathNo = pathNo + 1;
+            if (this.recurSolver(pathNo) && !this.isAnyDupl()) {
+              return true;
+            } else {
+              pathNo = pathNo - 1;
+              this.recurSolver(pathNo);
+            }
+          }
+        } else {
+          return false;
+        }
+      }
+    }
   }
 
   solve() {
-
-    this.solveForward();
-
-
-  //   let row = 0;
-  //   let size = this.initBoard.length;
-  //   for (let col = 0; col < size; col++) {
-  //     let block = this.rowColToBlock(row, col);
-  //     do {
-  //       for (let i = 0; i < this.freeCount; i++) {
-  //         let elem = this.freeElem[String(i)];
-  //         if (elem.row === row && elem.col == col) {
-  //           console.log(elem);
-  //           let currentNumber = elem.number;
-  //           let newNum = Math.floor(Math.random()*9) + 1;
-  //           console.log(newNum);
-  //           elem.number = newNum;
-  //           elem.traceVal = 1;
-  //           console.log(elem);
-  //         }
-  //       }
-  //     } while (this.isRowDupl(row) && this.isColDupl(col) && this.isBlockDupl(block));
-  //   }
+    this.recurSolver(0,0);
+    // console.log(this.solvePath[0][0]);
+    // console.log(this.solvePath[1][1]);
   }
 
 
@@ -111,6 +127,8 @@ class Sudoku {
                                                 number: 0,
                                                 traceVal: 0};
           this.initBoard[i].push(0);
+          this.solvePath.push([i,j]);
+          this.numInPath.push(0);
           this.freeCount += 1;
         } else {
           let num = Number(this.boardData[i][j]);
@@ -210,6 +228,27 @@ class Sudoku {
     }
   }
 
+  isAnyEmpty() {
+    let size = this.initBoard.length;
+    let rowEmptyCount = 0;
+    let colEmptyCount = 0;
+    for (let row = 0; row < size; row++) {
+      if (this.isRowEmpty(row)) {
+        rowEmptyCount++;
+      }
+      for (let col = 0; col < size; col++) {
+        if (this.isColEmpty(col)) {
+          colEmptyCount++;
+        }
+      }
+    }
+    if (rowEmptyCount > 0 || colEmptyCount > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   isRowDupl(row) {
     let numbers = [];
     for (let i = 0; i <this.freeCount; i ++) {
@@ -270,6 +309,32 @@ class Sudoku {
     }
     let check = new Set(numbers);
     if (numbers.length > check.size) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isAnyDupl() {
+    let size = this.initBoard.length;
+    let rowDuplCount = 0;
+    let colDuplCount = 0;
+    let blockDuplCount = 0;
+    for (let row = 0; row < size; row++) {
+      if (this.isRowDupl(row)) {
+        rowDuplCount++;
+      }
+      for (let col = 0; col < size; col++) {
+        let block = this.rowColToBlock(row, col);
+        if (this.isColDupl(col)) {
+          colDuplCount++;
+        }
+        if (this.isBlockDupl(block)) {
+          blockDuplCount++;
+        }
+      }
+    }
+    if (rowEmptyCount > 0 || colEmptyCount > 0 || blockDuplCount > 0) {
       return true;
     } else {
       return false;

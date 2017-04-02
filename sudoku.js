@@ -188,7 +188,7 @@ class Sudoku {
 
       return this.backtrack(position);
     }
-    else {
+    else { // fill out the empty/zero position
       for (let num = 1 ; num < 10 ; num++) {
         this._board[position] = num;
 
@@ -224,7 +224,7 @@ var fs = require('fs')
 
 var board_string = fs.readFileSync('set-04_peter-norvig_11-hardest-puzzles.txt')
   .toString()
-  .split("\n")[0]
+  .split("\n")[10]
 
 
 var game = new Sudoku(board_string)

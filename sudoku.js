@@ -12,29 +12,25 @@ class Sudoku {
     this.numInPath = [];
   }
 
-  solveForward() {
+  backtrack(position) {
 
-    let size = this.initBoard.length;
-    let row = 0;
-    let col = 0;
-    // for (let col = 0; col < size; col++) {
-    while (col < size) {
-      let block = this.rowColToBlock(row, col);
-      for (let i = 0; i < this.freeCount; i++) {
-        let elem = this.freeElem[String(i)];
-        if (elem.row === row && elem.col == col) {
-          console.log(elem);
-          let currentNumber = elem.number;
-          let newNum = 0;
-          newNum = Math.floor(Math.random()*9) + 1;
-          elem.number = newNum;
-          elem.traceVal = 1;
-          console.log(`newNum: ${newNum}`);
-          console.log(elem);
+    let maxPos = this.solvePath.length;
+    let elem = this.freeElem[String(position)];
+    if (position === maxPos) {
+      return true;
+    } else {
+      for (let val = 1; val <= 9; val++) {
+        elem.number = val;
+        if (!this.isAnyDupl()) {
+          if (this.backtrack(position + 1)) {
+            return true;
+          }
         }
       }
-      col++;
     }
+    elem.number = 0;
+    return false;
+
 
     // this one cannot go pass row 6
     /*let size = this.initBoard.length;
@@ -68,6 +64,7 @@ class Sudoku {
 
 }
 
+/*
   recurSolver(path) {
     let sol = [1, 2, 3, 4, 5, 6, 7, 8, 9];
     if (path < this.solvePath.length) {
@@ -80,7 +77,7 @@ class Sudoku {
       if (!this.isAnyDupl()) {
         return true;
       }
-    } else {
+    } else if (pathNo < this.solvePath.length){
       for (let i = 0; i < this.solvePath.length; i++) {
         if (this.numInPath[i] === 0) {
           for (let j = 0; j < sol.length; j++) {
@@ -105,11 +102,10 @@ class Sudoku {
       }
     }
   }
+*/
 
   solve() {
-    this.recurSolver(0,0);
-    // console.log(this.solvePath[0][0]);
-    // console.log(this.solvePath[1][1]);
+    this.backtrack(0);
   }
 
 
@@ -334,7 +330,7 @@ class Sudoku {
         }
       }
     }
-    if (rowEmptyCount > 0 || colEmptyCount > 0 || blockDuplCount > 0) {
+    if (rowDuplCount > 0 || colDuplCount > 0 || blockDuplCount > 0) {
       return true;
     } else {
       return false;
@@ -348,14 +344,13 @@ class Sudoku {
 var fs = require('fs')
 var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
   .toString()
-  .split("\n")[1]
+  .split("\n")[2]
 
 var game = new Sudoku(board_string)
 
 // Remember: this will just fill out what it can and not "guess"
-console.log(game.board());
+game.board();
+console.log(game.showBoard());
+console.log()
 game.solve();
 console.log(game.showBoard());
-// console.log(game.fixedElem);
-// console.log();
-// console.log(game.freeElem);

@@ -31,78 +31,8 @@ class Sudoku {
     elem.number = 0;
     return false;
 
-
-    // this one cannot go pass row 6
-    /*let size = this.initBoard.length;
-    let row = 0;
-    while (this.isRowEmpty(row) && row < size) {
-      do {
-        for (let col = 0; col < size; col++) {
-          for (let i = 0; i < this.freeCount; i++) {
-            do {
-              let elem = this.freeElem[String(i)];
-              let block = elem.block;
-              if (elem.row === row && elem.col == col) {
-                console.log(elem);
-                let currentNumber = elem.number;
-                let newNum = 0;
-                do {
-                  newNum = Math.floor(Math.random()*9) + 1;
-                  elem.number = newNum;
-                  elem.traceVal = 1;
-                } while (this.isBlockDupl(block));
-                console.log(`newNum: ${newNum}`);
-                console.log(elem);
-              }
-            } while (this.isColDupl(col));
-          }
-        }
-      } while (this.isRowDupl(row));
-      row++;
-    }
-  }*/
-
 }
 
-/*
-  recurSolver(path) {
-    let sol = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-    if (path < this.solvePath.length) {
-
-    }
-    let pathNo = path;
-    let row = this.solvePath[pathNo][0];
-    let col = this.solvePath[pathNo][1];
-    if (!this.isAnyEmpty()) {
-      if (!this.isAnyDupl()) {
-        return true;
-      }
-    } else if (pathNo < this.solvePath.length){
-      for (let i = 0; i < this.solvePath.length; i++) {
-        if (this.numInPath[i] === 0) {
-          for (let j = 0; j < sol.length; j++) {
-            let newNum = sol[j];
-            for (let k = 0; k < this.freeCountl; k++) {
-              let elem = this.freeElem[String(k)];
-              if (elem.row === row && elem.col === col) {
-                elem.number = newNum;
-              }
-            }
-            pathNo = pathNo + 1;
-            if (this.recurSolver(pathNo) && !this.isAnyDupl()) {
-              return true;
-            } else {
-              pathNo = pathNo - 1;
-              this.recurSolver(pathNo);
-            }
-          }
-        } else {
-          return false;
-        }
-      }
-    }
-  }
-*/
 
   solve() {
     this.backtrack(0);

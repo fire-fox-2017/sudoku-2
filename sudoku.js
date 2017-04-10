@@ -6,7 +6,6 @@ class Sudoku {
   }
 
   solve(board, emptyPositions) {
-    // Variables to track our position in the solver
     let limit = 9,
     i, row, column, value, found;
     for(i = 0; i < emptyPositions.length;) {
@@ -37,7 +36,7 @@ class Sudoku {
     return board;
   }
 
-  // Returns a string representing the current state of the board
+
   board() {
     let board = [];
     let n = 0;

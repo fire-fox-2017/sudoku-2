@@ -9,23 +9,22 @@ class Sudoku {
 
     // Returns a string representing the current state of the board
     board() {
-        let tempBoard1 = [],
-            tempBoard2 = [];
-        let board = Math.sqrt(this._boardString.length);
-        for (let i = 0; i < this._boardString.length; i++) {
-            if (this._boardString[i] !== '0') {
-                tempBoard1.push(+this._boardString[i]);
-            } else {
-                tempBoard1.push(+' ');
-            }
-        }
-        for (let j = 0; j < tempBoard1.length; j += board) {
-            tempBoard2.push(tempBoard1.slice(j, j + board));
-        }
-        return tempBoard2;
+      let ukuranPapan = 9;
+      let lokasiAngka = 0;
+      let tmp = [];
+
+      for (var i = 0; i < ukuranPapan; i++) {
+          let tmpPapanSudoku = [];
+          for (var j = 0; j < ukuranPapan; j++) {
+              tmpPapanSudoku.push(+this._boardString[lokasiAngka]);
+              lokasiAngka++;
+          }
+          tmp.push(tmpPapanSudoku);
+      }
+      return tmp;
     }
 
-    empty_board() {
+    cariPosisiKosong() {
         for (let x = 0; x < this._papanSudoku.length; x++) {
             for (let y = 0; y < this._papanSudoku[x].length; y++) {
                 if (this._papanSudoku[x][y] == 0) {
@@ -36,82 +35,86 @@ class Sudoku {
         return this._posisiKosong;
     }
 
-    check_row(row, value) {
-        for (let i = 0; i < 9; i++) {
-            if (this._papanSudoku[row][i] == value) {
+    cekBarisPapan(kolomAngka, angka) {
+        for (var baris = 0; baris < 9; baris++) {
+            if (this._papanSudoku[baris][kolomAngka] == angka) {
                 return false;
             }
         }
         return true;
     }
 
-    check_column(column, value) {
-        for (let i = 0; i < 9; i++) {
-            if (this._papanSudoku[i][column] == value) {
+    //cek pada kolom papan, dimulai dari kolom 0, lalu lanjut ke kanan
+    cekKolomPapan(barisAngka, angka) {
+        for (var kolom = 0; kolom < 9; kolom++) {
+            if (this._papanSudoku[barisAngka][kolom] == angka) {
                 return false;
             }
         }
         return true;
     }
 
-    check_3x3_square(row, column, value) {
-        let columnCorner = 0,
-            rowCorner = 0,
-            squareSize = 3;
+    cekKolom3x3(barisAngka, kolomAngka, angka) {
+        var kotak = 3;
+        var posKolom = 0;
+        var posBaris = 0;
 
-        while (column >= columnCorner + squareSize) {
-            columnCorner += squareSize
+        //untuk mencari baris kotak 3x3 dari posisi angka yang ada di papan sudoku
+        while (barisAngka >= posBaris + kotak) {
+            posBaris += kotak; //batas baris min
         }
 
-        while (row >= rowCorner + squareSize) {
-            rowCorner += squareSize
+        //untuk mencari kolom kotak 3x3 dari posisi angka yang ada di papan sudoku
+        while (kolomAngka >= posKolom + kotak) {
+            posKolom += kotak; //batas kolom min
         }
 
-        for (let i = rowCorner; i < rowCorner + squareSize; i++) {
-            for (let j = columnCorner; j < columnCorner + squareSize; j++) {
-                if (this._papanSudoku[i][j] == value) {
-                    return false
+        for (var baris3x3 = posBaris; baris3x3 < posBaris + kotak; baris3x3++) {
+            for (var kolom3x3 = posKolom; kolom3x3 < posKolom + kotak; kolom3x3++) {
+                if (this._papanSudoku[baris3x3][kolom3x3] == angka) {
+                    return false;
                 }
             }
         }
-        return true
+        return true;
     }
 
-    check_value(column, row, value) {
-        if (this.check_row(row, value) && this.check_column(column, value) && this.check_3x3_square(row, column, value)) {
-            return true
+    cekAngka(barisAngka, kolomAngka, angka) {
+        if (this.cekBarisPapan(kolomAngka, angka) &&
+            this.cekKolomPapan(barisAngka, angka) &&
+            this.cekKolom3x3(barisAngka, kolomAngka, angka)) {
+            return true;
         } else {
-            return false
+            return false;
         }
     }
 
     solve() {
-        let limit = 9,
-            row, column, value, found;
+        var limit = 9;
+        var baris;
+        var kolom;
+        var angka;
+        var found;
         for (let i = 0; i < this._posisiKosong.length;) {
-            row = this._posisiKosong[i][0]
-            column = this._posisiKosong[i][1];
-            value = this._papanSudoku[row][column] + 1;
+            baris = this._posisiKosong[i][0]
+            kolom = this._posisiKosong[i][1];
+            angka = this._papanSudoku[baris][kolom] + 1;
             found = false;
-            while (!found && value <= limit) {
-                if (this.check_value(column, row, value)) {
+            while (!found && angka <= limit) {
+                if (this.cekAngka(baris, kolom ,angka)) {
                     found = true;
-                    this._papanSudoku[row][column] = value
+                    this._papanSudoku[baris][kolom] = angka
                     i++
                 } else {
-                    value++;
+                    angka++;
                 }
             }
 
             if (!found) {
-                this._papanSudoku[row][column] = 0;
+                this._papanSudoku[baris][kolom] = 0;
                 i--;
             }
         }
-
-        // this._papanSudoku.forEach(function(row){
-        // console.log(this._papanSudoku)
-        // });
 
         return this._papanSudoku;
     }
@@ -120,13 +123,14 @@ class Sudoku {
 // The file has newlines at the end of each line,
 // so we call split to remove it (\n)
 var fs = require('fs')
-var board_string = fs.readFileSync('set-01_sample.unsolved.txt')
+var board_string = fs.readFileSync('set-04_peter-norvig_11-hardest-puzzles.txt')
     .toString()
     .split("\n")[0]
 
 var game = new Sudoku(board_string)
 
 // Remember: this will just fill out what it can and not "guess"
-console.log(game.board())
-game.empty_board()
-console.log(game.solve())
+console.log(game.board());
+game.cariPosisiKosong();
+console.log(`\n Hasil :`);
+console.log(game.solve());

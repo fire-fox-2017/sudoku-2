@@ -25,10 +25,10 @@ class Sudoku {
     }
 
     cariPosisiKosong() {
-        for (let x = 0; x < this._papanSudoku.length; x++) {
-            for (let y = 0; y < this._papanSudoku[x].length; y++) {
-                if (this._papanSudoku[x][y] == 0) {
-                    this._posisiKosong.push([x, y])
+        for (var baris = 0; baris < this._papanSudoku.length; baris++) {
+            for (let kolom = 0; kolom < this._papanSudoku[baris].length; kolom++) {
+                if (this._papanSudoku[baris][kolom] == 0) {
+                    this._posisiKosong.push([baris, kolom]);
                 }
             }
         }
